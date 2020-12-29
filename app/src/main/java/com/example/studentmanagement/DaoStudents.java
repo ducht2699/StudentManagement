@@ -22,6 +22,12 @@ public class DaoStudents {
     public void studentSetSelected(int id, boolean selected) {
     }
 
+    public void addStudent(Students students) {
+        String sql = "INSERT INTO STUDENTS VALUES (" + students.getStudentID() +",'" + students.getName() + "','" + students.getDob() + "','" + students.getEmail() + "','" + students.getAddress() + "')";
+        sqLiteDatabase = database.getWritableDatabase();
+        sqLiteDatabase.execSQL(sql);
+    }
+
     public List<Students> getAllStudent() {
         String sql = "SELECT * FROM STUDENTS";
         List<Students> list = new ArrayList<>();
