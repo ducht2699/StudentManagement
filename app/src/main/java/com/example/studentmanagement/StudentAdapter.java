@@ -6,24 +6,52 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> implements Filterable {
     List<Students> studentsList;
+    List<Students> studentsListTemp;
     DaoStudents daoStudents;
     Context context;
     int layout;
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Students> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(studentsListTemp);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Students item : studentsListTemp) {
+                    if (String.valueOf(item.getStudentID()).toLowerCase().contains(filterPattern) || item.getName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            studentsList.clear();
+            studentsList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public StudentAdapter(List<Students> studentsList, Context context, int layout) {
         this.studentsList = studentsList;
+        studentsListTemp = new ArrayList<>(studentsList);
         this.context = context;
         this.layout = layout;
     }
@@ -66,11 +94,22 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
                 dialog.show();
             }
         });
+        holder.cbSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                student.setSelected(!student.isSelected());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return studentsList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

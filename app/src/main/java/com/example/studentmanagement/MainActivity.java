@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -33,5 +37,27 @@ public class MainActivity extends AppCompatActivity {
         rcvStudentList.setLayoutManager(linearLayoutManager);
         adapter = new StudentAdapter(studentsList, this, R.layout.item_student_list);
         rcvStudentList.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.menuSearch);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Tìm kiếm theo tên và mssv");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+        return true;
     }
 }

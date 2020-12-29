@@ -32,8 +32,7 @@ public class Database extends SQLiteOpenHelper {
                     random.nextInt(30) + 1 + "/" + random.nextInt(12)  + 1 + "/" + random.nextInt(7) + 1 + 1995 + "','" +
                     faker.name.firstName() + "." + faker.number.between(20170001, 20207000) + "@gmail.com','" +
                     faker.address.streetName() + "," +
-                    faker.address.city() + "," +
-                    faker.address.country() + "')";
+                    faker.address.city() + "')";
             db.execSQL(sql);
         }
 
